@@ -1,69 +1,29 @@
 CXX := clang++
 
-SRC_DIR := src
-INC_DIR := includes
-BUILD_ROOT := builds
+CXXFLAGS := -O3 -march=native -ffast-math -mfma -std=c++20 -Wall -Werror -Iinclude -Isrc
 
-DEBUG_DIR := $(BUILD_ROOT)/debug
-RELEASE_DIR := $(BUILD_ROOT)/release
+EXAMPLE_DIR := examples
+BUILD_DIR := builds
 
-TARGET := test
+EXAMPLE_SRCS := $(shell find $(EXAMPLE_DIR) -name "*.cpp")
 
-BASE_FLAGS := -O3 -march=native -ffast-math -mfma -std=c++20 -Wall -Werror -I$(INC_DIR)
-DEPFLAGS := -MMD -MP
+EXAMPLE_BINS := $(patsubst %.cpp, $(BUILD_DIR)/%, $(notdir $(EXAMPLE_SRCS)))
 
-SRCS := $(wildcard $(SRC_DIR)/*.cpp)
+.PHONY: all clean help
 
-DEBUG_OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(DEBUG_DIR)/obj/%.o,$(SRCS))
-RELEASE_OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(RELEASE_DIR)/obj/%.o,$(SRCS))
+all: $(EXAMPLE_BINS)
 
-.PHONY: all debug release run-debug run-release mem clean
+$(BUILD_DIR)/%:
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $(shell find $(EXAMPLE_DIR) -name "$*.cpp") -o $@
+	@echo "Built $@ successfully!"
 
-all: release
-
-# Debug build
-debug: CXXFLAGS := $(BASE_FLAGS) -g -fsanitize=address,undefined,leak
-debug: LDFLAGS := -fsanitize=address,undefined,leak
-debug: $(DEBUG_DIR)/bin/$(TARGET)
-
-$(DEBUG_DIR)/bin/$(TARGET): $(DEBUG_OBJS)
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
-	@echo "Debug build complete: $@"
-
-$(DEBUG_DIR)/obj/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
-
-# Release build
-release: CXXFLAGS := $(BASE_FLAGS) -flto
-release: LDFLAGS := -flto
-release: $(RELEASE_DIR)/bin/$(TARGET)
-
-$(RELEASE_DIR)/bin/$(TARGET): $(RELEASE_OBJS)
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
-	@echo "Release build complete: $@"
-
-$(RELEASE_DIR)/obj/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
-
-# Run helpers
-run-debug: debug
-	$(DEBUG_DIR)/bin/$(TARGET)
-
-run-release: release
-	$(RELEASE_DIR)/bin/$(TARGET)
-
-mem: debug
-	valgrind -s $(DEBUG_DIR)/bin/$(TARGET)
-
-# Cleanup
 clean:
-	rm -rf $(BUILD_ROOT)
-	@echo "Clean complete"
+	rm -rf $(BUILD_DIR)
+	@echo "Cleaned up builds directory!"
 
-# Dependencies
--include $(DEBUG_OBJS:.o=.d)
--include $(RELEASE_OBJS:.o=.d)
+help:
+	@echo "Detected source files:"
+	@echo "$(EXAMPLE_SRCS)"
+	@echo "Target binaries:"
+	@echo "$(EXAMPLE_BINS)"
