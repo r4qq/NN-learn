@@ -1,10 +1,9 @@
 #pragma once
 
 #include "ActivationLayer.hpp"
-#include <cmath>
 
 template<typename T>
-class TanhLayer : public ActivationLayer<T>
+class ReLuLayer : public ActivationLayer<T>
 {
     public:
         T activationFunc(T x) override

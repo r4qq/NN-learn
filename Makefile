@@ -21,7 +21,6 @@ RELEASE_OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(RELEASE_DIR)/obj/%.o,$(SRCS))
 
 all: release
 
-# Debug build
 debug: CXXFLAGS := $(BASE_FLAGS) -g -fsanitize=address,undefined,leak
 debug: LDFLAGS := -fsanitize=address,undefined,leak
 debug: $(DEBUG_DIR)/bin/$(TARGET)
@@ -35,7 +34,6 @@ $(DEBUG_DIR)/obj/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
 
-# Release build
 release: CXXFLAGS := $(BASE_FLAGS) -flto
 release: LDFLAGS := -flto
 release: $(RELEASE_DIR)/bin/$(TARGET)
@@ -49,7 +47,6 @@ $(RELEASE_DIR)/obj/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
 
-# Run helpers
 run-debug: debug
 	$(DEBUG_DIR)/bin/$(TARGET)
 
@@ -59,11 +56,9 @@ run-release: release
 mem: debug
 	valgrind -s $(DEBUG_DIR)/bin/$(TARGET)
 
-# Cleanup
 clean:
 	rm -rf $(BUILD_ROOT)
 	@echo "Clean complete"
 
-# Dependencies
 -include $(DEBUG_OBJS:.o=.d)
 -include $(RELEASE_OBJS:.o=.d)
