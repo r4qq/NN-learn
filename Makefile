@@ -1,24 +1,29 @@
 CXX := clang++
 
-CXXFLAGS := -O3 -march=native -ffast-math -mfma -std=c++20 -Wall -Werror -Iincludes
+CXXFLAGS := -O3 -march=native -ffast-math -mfma -std=c++20 -Wall -Werror -Iinclude -Isrc
 
-SRCS := $(wildcard src/*.cpp)
-TARGET := builds/test
+EXAMPLE_DIR := examples
+BUILD_DIR := builds
 
-.PHONY: all build run debug clean
+EXAMPLE_SRCS := $(shell find $(EXAMPLE_DIR) -name "*.cpp")
 
-all: build
+EXAMPLE_BINS := $(patsubst %.cpp, $(BUILD_DIR)/%, $(notdir $(EXAMPLE_SRCS)))
 
-build:
-	@mkdir -p builds
-	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)
+.PHONY: all clean help
 
-run: build
-	./$(TARGET)
+all: $(EXAMPLE_BINS)
 
-debug: CXXFLAGS := -g -O0 -std=c++20 -Wall -Werror -Iincludes -fsanitize=address,undefined,leak
-debug: build
+$(BUILD_DIR)/%:
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $(shell find $(EXAMPLE_DIR) -name "$*.cpp") -o $@
+	@echo "Built $@ successfully!"
 
 clean:
-	rm -rf build
-	@echo "Cleaned up build directory!"
+	rm -rf $(BUILD_DIR)
+	@echo "Cleaned up builds directory!"
+
+help:
+	@echo "Detected source files:"
+	@echo "$(EXAMPLE_SRCS)"
+	@echo "Target binaries:"
+	@echo "$(EXAMPLE_BINS)"

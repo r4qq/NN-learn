@@ -1,8 +1,8 @@
-#include "DenseLayer.hpp"
-#include "NeuralNetwork.hpp"
-#include "TanhLayer.hpp"
-#include "SigmoidLayer.hpp"
-#include "Loss.hpp"
+#include "../src/DenseLayer.hpp"
+#include "../src/NeuralNetwork.hpp"
+#include "../src/TanhLayer.hpp"
+#include "../src/SigmoidLayer.hpp"
+#include "../src/Loss.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -41,10 +41,14 @@ int main()
     {
         auto res = nn.forward(X);
         auto err = MSE<float>::calculate(res, Y);
-        if (i % 1000 == 0) { std::cout << "err: " << err << std::endl;}
+        if (i % 1000 == 0) { std::cout << "Error: " << err << std::endl;}
         auto gradTensor = MSE<float>::derivative(res, Y);
         nn.backward(gradTensor, LEARNINGRATE);
     }
+    
+    auto predictions = nn.forward(X);
+    std::cout << "\nResults:\nIn: 0,0 -> " << predictions(0,0) 
+              << "\nIn: 0,1 -> " << predictions(1,0) << std::endl;
 
     return 0;
 }
