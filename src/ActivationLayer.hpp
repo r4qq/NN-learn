@@ -17,7 +17,7 @@ class ActivationLayer : public Layer<T>
         Tensor::Tensor<T> forward(const Tensor::Tensor<T>& input) override
         {
             _cacheInput = input;
-            Tensor::Tensor<T> outputTensor({input.shape()});
+            Tensor::Tensor<T> outputTensor(input.shape());
 
             std::transform(input.data(), 
                            input.data() + input.size(),
@@ -30,7 +30,7 @@ class ActivationLayer : public Layer<T>
 
         Tensor::Tensor<T> backward(const Tensor::Tensor<T>& outputGradient, T learningRate) override
         {
-            Tensor::Tensor<T> inputGradient({outputGradient.shape()});
+            Tensor::Tensor<T> inputGradient(outputGradient.shape());
 
             std::transform(outputGradient.data(),
                            outputGradient.data() + outputGradient.size(),
