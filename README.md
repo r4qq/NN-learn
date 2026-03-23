@@ -1,6 +1,3 @@
-Treść wiadomości Gemini
-Plaintext
-
 # NN-learn
 
 ## Note: Project for learning purposes. Not for serious use.
