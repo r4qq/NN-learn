@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/tensor-hpp/Tensor.hpp"
+#include "../include/tensor-hpp/Tensor-simd-block.hpp"
 #include <type_traits>
 
 template<typename T>

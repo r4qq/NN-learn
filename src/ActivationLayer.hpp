@@ -10,6 +10,7 @@ class ActivationLayer : public Layer<T>
         Tensor::Tensor<T> _cacheInput;
 
     public:
+        ActivationLayer() : _cacheInput({1}) {}; //placeholder
 
         virtual T activationFunc(T x) = 0;
         virtual T derivativeMath(T x) = 0;

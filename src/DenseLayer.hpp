@@ -17,9 +17,10 @@ class DenseLayer : public Layer<T>
     public:
         DenseLayer(uint64_t inputSize, uint64_t outputSize)
         :   _weights({inputSize, outputSize}),
-            _weightGradients({inputSize, outputSize}),
             _biases({outputSize}),
-            _cacheInput({1})
+            _cacheInput({1}),
+            _weightGradients({inputSize, outputSize})
+            
         {
             _biases.fill(T{0});
 
@@ -69,7 +70,8 @@ class DenseLayer : public Layer<T>
             Tensor::matmul(transposedInput, outputGradient, _weightGradients);
             
             //inputGradient = weightsT * outputGradient
-            auto transposedWeights = _weights.transpose();
+            Tensor::Tensor<T> transposedWeights({_weights.shape()[1], _weights.shape()[0]});
+            Tensor::transpose(_weights, transposedWeights);
             Tensor::Tensor<T> inputGradient({batchSize, inputSize});
             Tensor::matmul(outputGradient, transposedWeights, inputGradient);
 

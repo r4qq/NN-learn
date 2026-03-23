@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/tensor-hpp/Tensor.hpp"
+#include "../include/tensor-hpp/Tensor-simd-block.hpp"
 #include <algorithm>
 #include <numeric>
 
@@ -35,8 +35,7 @@ class MSE
                            gradient.data(),
                            [n](T predVal, T truVal){
                                 return T{2} * (predVal - truVal) / n;
-                           }    
-                        );
+                           });
 
             return gradient;
         }
