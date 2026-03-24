@@ -8,8 +8,8 @@
 #include <memory>
 #include <iostream>
 
-#define EPOCHS 100000
-#define LEARNINGRATE 0.1f
+#define EPOCHS 10000
+#define LEARNINGRATE 0.5f
 
 int main()
 {
@@ -41,14 +41,16 @@ int main()
     {
         auto res = nn.forward(X);
         auto err = MSE<float>::calculate(res, Y);
-        if (i % 1000 == 0) { std::cout << "Error: " << err << std::endl;}
+        if (i % 1000 == 0) { std::cout <<"In Epoch: " << i << ", Error: " << err << std::endl;}
         auto gradTensor = MSE<float>::derivative(res, Y);
         nn.backward(gradTensor, LEARNINGRATE);
     }
     
     auto predictions = nn.forward(X);
-    std::cout << "\nResults:\nIn: 0,0 -> " << predictions(0,0) 
-              << "\nIn: 0,1 -> " << predictions(1,0) << std::endl;
-
+    std::cout << "\nResults:" 
+              << "\nIn: 0,0 -> " << predictions(0,0) 
+              << "\nIn: 0,1 -> " << predictions(1,0) 
+              << "\nIn: 1,0 -> " << predictions(2,0)
+              << "\nIn: 1,1 -> " << predictions(3,0) << std::endl;
     return 0;
 }

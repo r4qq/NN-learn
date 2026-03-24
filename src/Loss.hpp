@@ -26,7 +26,7 @@ class MSE
 
         static Tensor::Tensor<T> derivative(const Tensor::Tensor<T>& predicted, const Tensor::Tensor<T>& trueVal)
         {
-            auto n = predicted.size();
+            auto n = predicted.shape()[0];
             Tensor::Tensor<T> gradient(predicted.shape());
 
             std::transform(predicted.data(),
