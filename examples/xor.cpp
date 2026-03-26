@@ -40,9 +40,10 @@ int main()
     for (uint64_t i = 0; i < EPOCHS ; ++i) 
     {
         auto res = nn.forward(X);
-        auto err = MSE<float>::calculate(res, Y);
+        auto err = Loss::MSE<float>::calculate(res, Y);
         if (i % 1000 == 0) { std::cout <<"In Epoch: " << i << ", Error: " << err << std::endl;}
-        auto gradTensor = MSE<float>::derivative(res, Y);
+        auto gradTensor = Loss::
+        MSE<float>::derivative(res, Y);
         nn.backward(gradTensor, LEARNINGRATE);
     }
     
