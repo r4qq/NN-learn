@@ -42,8 +42,7 @@ int main()
         auto res = nn.forward(X);
         auto err = Loss::MSE<float>::calculate(res, Y);
         if (i % 1000 == 0) { std::cout <<"In Epoch: " << i << ", Error: " << err << std::endl;}
-        auto gradTensor = Loss::
-        MSE<float>::derivative(res, Y);
+        auto gradTensor = Loss::MSE<float>::derivative(res, Y);
         nn.backward(gradTensor, LEARNINGRATE);
     }
     
