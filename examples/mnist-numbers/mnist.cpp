@@ -5,7 +5,7 @@
 
 int main()
 {
-    mnistLoader<void>::loadData(TRAIN_DATA);
-    mnistLoader<void>::loadData(TRAIN_LABELS);
+    mnistLoader<float>::loadData(TRAIN_DATA);
+    mnistLoader<float>::loadLabelData(TRAIN_LABELS);
     return 0;
 }
