@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <string>
 
+#define MNIST_DATA_MAGIC_NUMBER 2051
+#define MNIST_LABEL_MAGIC_NUMBER 2049
 
 namespace MnistLoader
 {
@@ -15,8 +17,8 @@ namespace MnistLoader
     {
         Tensor::Tensor<T> learnData;
         Tensor::Tensor<T> learnLabels;
-        Tensor::Tensor<T> checkData;
-        Tensor::Tensor<T> checkLabels;
+        Tensor::Tensor<T> testData;
+        Tensor::Tensor<T> testLabels;
     };
 
     template<typename T>
@@ -40,8 +42,8 @@ namespace MnistLoader
         dataFile.read(reinterpret_cast<char*>(&magicDataNumber), 4);
         labelFile.read(reinterpret_cast<char*>(&magicLabelNumber), 4);
         
-        if (std::byteswap(magicDataNumber)  != 2051 || 
-            std::byteswap(magicLabelNumber) != 2049) 
+        if (std::byteswap(magicDataNumber) != MNIST_DATA_MAGIC_NUMBER || 
+            std::byteswap(magicLabelNumber) != MNIST_LABEL_MAGIC_NUMBER) 
         {
             throw std::runtime_error("Invalid mnist data");
         }
@@ -55,24 +57,23 @@ namespace MnistLoader
         {
             throw std::runtime_error("data and label size mismatch");
         }
+
+        auto trainSize = dataNum * trainSplit;
         
-        for (uint64_t i = 0; i < std::byteswap(rows); i++) 
+        Tensor::Tensor<T> dataTempTrain({trainSize, rows * cols}); 
+        Tensor::Tensor<T> labelTempTrain({trainSize, 10}); 
+        labelTempTrain.fill(T{0});
+
+        const T* dataPtr = dataTempTrain.data();
+        const T* labelPtr = labelTempTrain.data();
+        for (uint64_t i = 0; i < trainSize; ++i) 
         {
-            for (uint64_t j = 0; j < std::byteswap(cols); j++) 
+            for (uint64_t j = 0; j < cols * rows; ++j) 
             {
-                dataFile.read(reinterpret_cast<char*>(&tempNum), 1);
-                std::cout << (static_cast<T>(tempNum) / 255) << "/";
-                // if (tempNum > 128) 
-                // {
-                //     std::cout << "##";
-                // } 
-                // else 
-                // {
-                //     std::cout << "..";
-                // }
+                T* iter = dataPtr + ((i * j) + j);
             }
-            std::cout << '\n';
         }
+
         
         dataFile.close();
         // std::cout << "label: " << static_cast<T>(label) << '\n';
