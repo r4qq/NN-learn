@@ -1,7 +1,10 @@
 #pragma once
 
-#include "../include/tensor-hpp/Tensor-simd-block.hpp"
+#define TENSOR_TYPE 2
+
+#include "config.hpp"
 #include <type_traits>
+
 
 template<typename T>
 class Layer
