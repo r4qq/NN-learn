@@ -6,6 +6,8 @@
 
 int main()
 {
+    auto mnistData = MnistLoader::loadData<float>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
     
+
     return 0;
 }

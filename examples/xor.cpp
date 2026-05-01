@@ -1,8 +1,8 @@
-#include "../src/DenseLayer.hpp"
-#include "../src/NeuralNetwork.hpp"
-#include "../src/TanhLayer.hpp"
-#include "../src/SigmoidLayer.hpp"
-#include "../src/Loss.hpp"
+#include "DenseLayer.hpp"
+#include "NeuralNetwork.hpp"
+#include "TanhLayer.hpp"
+#include "SigmoidLayer.hpp"
+#include "Loss.hpp"
 
 #include <cstdint>
 #include <memory>

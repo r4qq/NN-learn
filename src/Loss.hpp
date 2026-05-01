@@ -1,6 +1,9 @@
 #pragma once
 
-#include "../include/tensor-hpp/Tensor-simd-block.hpp"
+#define TENSOR_TYPE 2 
+
+#include "config.hpp"
+
 #include <algorithm>
 #include <numeric>
 

@@ -7,11 +7,11 @@
 #endif
 
 #if TENSOR_TYPE == 2
-#   include "../include/tensor-hpp/Tensor-simd-block.hpp"
+#   include "tensor-hpp/Tensor-simd-block.hpp"
 #elif TENSOR_TYPE == 1
-#   include "../include/tensor-hpp/Tensor-simd.hpp"
+#   include "tensor-hpp/Tensor-simd.hpp"
 #elif TENSOR_TYPE == 0
-#   include "../include/tensor-hpp/Tensor.hpp"
+#   include "tensor-hpp/Tensor.hpp"
 #else
 #   error invalid tensor type
 #endif
