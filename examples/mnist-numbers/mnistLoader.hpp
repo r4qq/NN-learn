@@ -1,4 +1,4 @@
-#define TENSOR_TYPE 2
+#pragma once
 
 #include "config.hpp"
 

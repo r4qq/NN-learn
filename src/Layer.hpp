@@ -1,8 +1,7 @@
 #pragma once
 
-#define TENSOR_TYPE 2
-
 #include "config.hpp"
+
 #include <type_traits>
 
 

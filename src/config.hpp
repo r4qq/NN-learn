@@ -1,10 +1,10 @@
+#pragma once
+
 #define TYPE_REGULAR 0
 #define TYPE_SIMD 1
 #define TYPE_SIMD_BLOCK 2
 
-#if !defined (TENSOR_TYPE)
-#   error "TENSOR_TYPE must be defined"
-#endif
+#define TENSOR_TYPE 2
 
 #if TENSOR_TYPE == 2
 #   include "tensor-hpp/Tensor-simd-block.hpp"
