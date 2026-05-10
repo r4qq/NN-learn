@@ -6,9 +6,10 @@
 #include <vector>
 #include <ranges>
 
-template<typename T>
-class NeuralNetwork
-{
+namespace NeuralNetwork {
+    template<typename T>
+    class MLP
+    {
     private:
         std::vector<std::unique_ptr<Layer<T>>> _layers;
 
@@ -37,4 +38,5 @@ class NeuralNetwork
                 tempGrad = layer->backward(tempGrad, learningRate);
             }
         }
-};
+    };
+}
