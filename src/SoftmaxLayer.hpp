@@ -1,5 +1,5 @@
 #include "Layer.hpp"
-#include "tensor-hpp/Tensor-simd-block.hpp"
+#include "config.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
