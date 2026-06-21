@@ -4,13 +4,16 @@
 #include "SoftmaxLayer.hpp"
 #include "mnistLoader.hpp"
 #include "Loss.hpp"
+#include "Utils.hpp"
+
+#include <chrono>
 #include <cstdint>
 
 #define TRAIN_DATA "examples/mnist-numbers/data/train-images.idx3-ubyte"
 #define TRAIN_LABELS "examples/mnist-numbers/data/train-labels.idx1-ubyte"
 #define TRAIN_SPLIT 0.8
 #define EPOCHS 10
-#define LEARNINGRATE 0.01
+#define LEARNINGRATE 0.05
 
 
 int main()
@@ -39,6 +42,8 @@ int main()
     std::cout << "Label Shape: " << mnistData.learnLabels.shape()[0] << "x" 
               << mnistData.learnLabels.shape()[1] << "\n";
     std::cout << "Running " << EPOCHS << " epochs" << std::endl;
+
+    auto startTime = std::chrono::high_resolution_clock::now();
 
     for (uint64_t epoch = 0; epoch < EPOCHS ; ++epoch) 
     {
@@ -72,7 +77,13 @@ int main()
         }
         std::cout << "Epoch " << epoch + 1 << " Average Loss: " 
               << epochLoss / (static_cast<float>(totalImages) / batchSize) << "\n";
+        Utils::printMemoryUsage();
     }
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+
+    std::cout << "Learntime: " << duration.count()/1000.0f << "s.\n"; 
 
     return 0;
 }
