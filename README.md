@@ -2,7 +2,7 @@
 
 ## Note: Project for learning purposes. Not for serious use.
 
-A header-only C++23 machine learning "framework" built from scratch to study core mechanics of neural networks, C++ language, and memory optimization. It relies on the tensor-hpp library for underlying tensor operations and matrix math.
+A header-only C++23 machine learning "framework" built from scratch to study core mechanics of neural networks, C++ language, and memory optimization. It relies on the [tensor-hpp](https://github.com/r4qq/tensor-hpp) library for underlying tensor operations and matrix math.
 
 ## Key Features
 
