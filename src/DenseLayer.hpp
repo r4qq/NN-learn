@@ -13,16 +13,27 @@ class DenseLayer : public Layer<T>
         Tensor::Tensor<T> _biases;
         Tensor::Tensor<T> _cacheInput;
         Tensor::Tensor<T> _weightGradients;
-    
+        Tensor::Tensor<T> _cachedOutput;
+        Tensor::Tensor<T> _transposedInput;
+        Tensor::Tensor<T> _transposedWeights;
+        Tensor::Tensor<T> _cachedInputGrad;
+        Tensor::Tensor<T> _biasGradients;    
+
     public:
         DenseLayer(uint64_t inputSize, uint64_t outputSize)
         :   _weights({inputSize, outputSize}),
             _biases({outputSize}),
             _cacheInput({1}),
-            _weightGradients({inputSize, outputSize})
+            _weightGradients({inputSize, outputSize}),
+            _cachedOutput({1}),
+            _transposedInput({1}),
+            _transposedWeights({1}),
+            _cachedInputGrad({1}),
+            _biasGradients({outputSize})
             
         {
             _biases.fill(T{0});
+            _biasGradients(T{0});
 
             std::random_device rd;
             std::mt19937 gen(rd());
@@ -43,19 +54,25 @@ class DenseLayer : public Layer<T>
             uint64_t batchSize = input.shape()[0];
             uint64_t outputSize = _weights.shape()[1];
 
+            
+            std::vector<uint64_t> expectedShape = {batchSize, outputSize};
+            if (_cachedOutput.shape() != expectedShape) [[unlikely]]
+            {
+                _cachedOutput = Tensor::Tensor<T>(expectedShape);
+            }            
+            
             //input * weights
-            Tensor::Tensor<T> outputTensor({batchSize, outputSize});
-            Tensor::matmul(input, _weights, outputTensor);
+            Tensor::matmul(input, _weights, _cachedOutput);
             
             //add biases
             for (uint64_t i = 0; i < batchSize; ++i) 
             {
                 for (uint64_t j = 0; j < outputSize; ++j) 
                 {
-                    outputTensor.unchecked(i, j) += _biases.unchecked(j); 
+                    _cachedOutput.unchecked(i, j) += _biases.unchecked(j); 
                 }
             }
-            return outputTensor;
+            return _cachedOutput;
         }
 
         Tensor::Tensor<T> backward(const Tensor::Tensor<T>& outputGradient, T learningRate) override
@@ -64,33 +81,47 @@ class DenseLayer : public Layer<T>
             uint64_t inputSize = _weights.shape()[0];
             uint64_t outputSize = _weights.shape()[1];
 
+            std::vector<uint64_t> expectedTransInputShape = {_cacheInput.shape()[1], _cacheInput.shape()[0]};
+            if (_transposedInput.shape() != expectedTransInputShape) [[unlikely]]
+            {
+                _transposedInput = Tensor::Tensor<T>(expectedTransInputShape);
+            }
+
+            std::vector<uint64_t> expectedTransWeightShape = {_weights.shape()[1], _weights.shape()[0]};
+            if (_transposedWeights.shape() != expectedTransWeightShape) [[unlikely]]
+            {
+                _transposedWeights = Tensor::Tensor<T>(expectedTransWeightShape);
+            }
+
+            std::vector<uint64_t> expectedInputGradShape = {batchSize, inputSize};
+            if (_cachedInputGrad.shape() != expectedInputGradShape) [[unlikely]]
+            {
+                _cachedInputGrad = Tensor::Tensor<T>(expectedInputGradShape);
+            }
+
             //weightsGradient = inputT * outputGradient
-            Tensor::Tensor<T> transposedInput({_cacheInput.shape()[1], _cacheInput.shape()[0]});
-            Tensor::transpose(_cacheInput, transposedInput);
-            Tensor::matmul(transposedInput, outputGradient, _weightGradients);
+            Tensor::transpose(_cacheInput, _transposedInput);
+            Tensor::matmul(_transposedInput, outputGradient, _weightGradients);
             
             //inputGradient = weightsT * outputGradient
-            Tensor::Tensor<T> transposedWeights({_weights.shape()[1], _weights.shape()[0]});
-            Tensor::transpose(_weights, transposedWeights);
-            Tensor::Tensor<T> inputGradient({batchSize, inputSize});
-            Tensor::matmul(outputGradient, transposedWeights, inputGradient);
+            Tensor::transpose(_weights, _transposedWeights);
+            Tensor::matmul(outputGradient, _transposedWeights, _cachedInputGrad);
 
             //biasGradient
-            Tensor::Tensor<T> biasGradient({outputSize});
-            biasGradient.fill(T{0});
+            _biasGradients.fill(T{0});
 
             for (uint64_t i = 0; i < batchSize; ++i) 
             {
                 for (uint64_t j = 0; j < outputSize; ++j) 
                 {
-                    biasGradient.unchecked(j) += outputGradient.unchecked(i, j); 
+                    _biasGradients.unchecked(j) += outputGradient.unchecked(i, j); 
                 }
             }
 
             //update weights adn biases
             _weights -= (_weightGradients * learningRate);
-            _biases -= (biasGradient * learningRate);
+            _biases -= (_biasGradients * learningRate);
 
-            return inputGradient;
+            return _cachedInputGrad;
         }
 };

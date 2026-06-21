@@ -8,9 +8,14 @@ class ActivationLayer : public Layer<T>
 {
     protected:
         Tensor::Tensor<T> _cacheInput;
+        Tensor::Tensor<T> _cachedOutput;     
+        Tensor::Tensor<T> _cachedInputGrad;  
 
     public:
-        ActivationLayer() : _cacheInput({1}) {}; //placeholder
+        ActivationLayer() : 
+            _cacheInput({1}),
+            _cachedOutput({1}),
+            _cachedInputGrad({1}) {}; //placeholder
 
         virtual T activationFunc(T x) = 0;
         virtual T derivativeMath(T x) = 0;
@@ -18,28 +23,34 @@ class ActivationLayer : public Layer<T>
         Tensor::Tensor<T> forward(const Tensor::Tensor<T>& input) override
         {
             _cacheInput = input;
-            Tensor::Tensor<T> outputTensor(input.shape());
+            if (_cachedOutput.shape() != input.shape())
+            {
+                _cachedOutput = Tensor::Tensor<T>(input.shape());
+            }
 
             std::transform(input.data(), 
                            input.data() + input.size(),
-                           outputTensor.data(),
-                           [this](T val){return this->activationFunc(val);}
-                        );
+                           _cachedOutput.data(),
+                           [this](T val){return this->activationFunc(val);
+                        });
 
-            return outputTensor;
+            return _cachedOutput;
         }
 
         Tensor::Tensor<T> backward(const Tensor::Tensor<T>& outputGradient, T learningRate) override
         {
-            Tensor::Tensor<T> inputGradient(outputGradient.shape());
+            if (_cachedInputGrad.shape() != outputGradient.shape()) 
+            {
+                _cachedInputGrad = Tensor::Tensor<T>(outputGradient.shape());
+            }
 
             std::transform(outputGradient.data(),
                            outputGradient.data() + outputGradient.size(),
                            _cacheInput.data(),
-                           inputGradient.data(),
-                           [this](T gradOut, T cachedIn){return gradOut * this->derivativeMath(cachedIn);}
-                        );
+                           _cachedInputGrad.data(),
+                           [this](T gradOut, T cachedIn){return gradOut * this->derivativeMath(cachedIn);
+                        });
 
-            return inputGradient;
+            return _cachedInputGrad;
         }
 };
