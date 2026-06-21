@@ -88,9 +88,9 @@ namespace MnistLoader
             }
         }
 
-        Tensor::Tensor<T> dataTempTest({trainSize, totalPixels}); 
-        Tensor::Tensor<T> labelTempTest({trainSize, 10}); 
-        labelTempTrain.fill(T{0});
+        Tensor::Tensor<T> dataTempTest({testSize, totalPixels}); 
+        Tensor::Tensor<T> labelTempTest({testSize, 10}); 
+        labelTempTest.fill(T{0});
 
         T* testDataPtr = dataTempTest.data();
         T* testLabelPtr = labelTempTest.data();
