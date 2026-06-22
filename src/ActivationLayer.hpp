@@ -23,7 +23,7 @@ class ActivationLayer : public Layer<T>
         Tensor::Tensor<T> forward(const Tensor::Tensor<T>& input) override
         {
             _cacheInput = input;
-            if (_cachedOutput.shape() != input.shape())
+            if (_cachedOutput.shape() != input.shape()) [[unlikely]]
             {
                 _cachedOutput = Tensor::Tensor<T>(input.shape());
             }
@@ -39,7 +39,7 @@ class ActivationLayer : public Layer<T>
 
         Tensor::Tensor<T> backward(const Tensor::Tensor<T>& outputGradient, T learningRate) override
         {
-            if (_cachedInputGrad.shape() != outputGradient.shape()) 
+            if (_cachedInputGrad.shape() != outputGradient.shape()) [[unlikely]]
             {
                 _cachedInputGrad = Tensor::Tensor<T>(outputGradient.shape());
             }
