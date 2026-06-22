@@ -25,7 +25,7 @@ int main()
 
     auto mnistData = MnistLoader::loadData<float>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
     
-    NeuralNetwork::MLP<float> nn;
+    NN::MLP<float> nn;
 
     uint64_t trainImagesAmount = mnistData.learnData.shape()[0];
     uint64_t inputSize = mnistData.learnData.shape()[1];
