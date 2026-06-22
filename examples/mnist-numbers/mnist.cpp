@@ -6,14 +6,17 @@
 #include "Loss.hpp"
 #include "Utils.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <iostream>
+#include <iterator>
 
 #define TRAIN_DATA "examples/mnist-numbers/data/train-images.idx3-ubyte"
 #define TRAIN_LABELS "examples/mnist-numbers/data/train-labels.idx1-ubyte"
 #define TRAIN_SPLIT 0.8
 #define EPOCHS 10
-#define LEARNINGRATE 0.05
+#define LEARNINGRATE 0.5
 
 
 int main()
@@ -24,8 +27,9 @@ int main()
     
     NeuralNetwork::MLP<float> nn;
 
-    uint64_t totalImages = mnistData.learnData.shape()[0];
+    uint64_t trainImagesAmount = mnistData.learnData.shape()[0];
     uint64_t inputSize = mnistData.learnData.shape()[1];
+    uint64_t validImagesAmount = mnistData.testData.shape()[0];
     uint64_t numClasses = mnistData.learnLabels.shape()[1];
 
     nn.addLayer(std::make_unique<DenseLayer<float>>(784, 128));
@@ -37,20 +41,19 @@ int main()
     Tensor::Tensor<float> batchX({batchSize, 784});
     Tensor::Tensor<float> batchY({batchSize, 10});
 
-    std::cout << "Data Shape: " << mnistData.learnData.shape()[0] << "x"
-              << mnistData.learnData.shape()[1] << "\n";
-    std::cout << "Label Shape: " << mnistData.learnLabels.shape()[0] << "x" 
-              << mnistData.learnLabels.shape()[1] << "\n";
+    std::cout << "Dataset size: " << trainImagesAmount + validImagesAmount << " images\n";
+    std::cout << "Training dataset size: " << trainImagesAmount << " images\n"; 
     std::cout << "Running " << EPOCHS << " epochs" << std::endl;
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
+    //train loop
     for (uint64_t epoch = 0; epoch < EPOCHS ; ++epoch) 
     {
-        float epochLoss = 0.0;
-        for (uint64_t i = 0; i < totalImages; i += batchSize) 
+        float epochLoss = 0.0f;
+        for (uint64_t i = 0; i < trainImagesAmount; i += batchSize) 
         {
-            uint64_t currentBatchSize = std::min(batchSize, totalImages - i);
+            uint64_t currentBatchSize = std::min(batchSize, trainImagesAmount - i);
 
             if (batchX.shape()[0] != currentBatchSize) [[unlikely]] 
             {
@@ -76,14 +79,62 @@ int main()
             epochLoss += loss;
         }
         std::cout << "Epoch " << epoch + 1 << " Average Loss: " 
-              << epochLoss / (static_cast<float>(totalImages) / batchSize) << "\n";
+              << epochLoss / (static_cast<float>(trainImagesAmount) / batchSize) << "\n";
         Utils::printMemoryUsage();
     }
 
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
-    std::cout << "Learntime: " << duration.count()/1000.0f << "s.\n"; 
+    std::cout << "\"Training\" time: " << duration.count()/1000.0f << "s.\n"; 
 
+
+    //valid loop
+    std::cout << "Training dataset size: " << validImagesAmount << " images\n"; 
+    startTime = std::chrono::high_resolution_clock::now();
+    uint64_t correctGuessses = 0;
+    for(uint64_t i = 0; i < validImagesAmount; i += batchSize)
+    {
+        uint64_t currentBatchSize = std::min(batchSize, validImagesAmount - i);
+        
+        if (batchX.shape()[0] != currentBatchSize) [[unlikely]] 
+        {
+            batchX = Tensor::Tensor<float>({currentBatchSize, inputSize});
+            batchY = Tensor::Tensor<float>({currentBatchSize, numClasses});
+        }
+
+         // imgs
+        auto xStart = mnistData.testData.data() + (i * inputSize);
+        auto xEnd = xStart + (currentBatchSize * inputSize);
+        std::copy(xStart, xEnd, batchX.data());
+        
+        // labels
+        auto yStart = mnistData.testLabels.data() + (i * numClasses);
+        auto yEnd = yStart + (currentBatchSize * numClasses);
+        std::copy(yStart, yEnd, batchY.data());
+
+        auto preds = nn.forward(batchX);
+
+        for (uint64_t j = 0; j < currentBatchSize; ++j) 
+        {
+            auto predRowStart = preds.data() + (j * numClasses);
+            auto trueLabelRow = batchY.data() +  (j * numClasses);
+
+            auto predDigit = std::distance(predRowStart, std::max_element(predRowStart, predRowStart + numClasses));
+            auto trueDigit = std::distance(trueLabelRow, std::max_element(trueLabelRow, trueLabelRow + numClasses));
+
+            if (predDigit == trueDigit) 
+            {
+                correctGuessses += 1;
+            }
+        }
+    }   
+    endTime = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+
+    std::cout << "\"Validation\" time: " << duration.count()/1000.0f << "s.\n";
+    std::cout << "Validation error: " << static_cast<float>(correctGuessses) / 
+                                         static_cast<float>(validImagesAmount)
+                                      << " %\n";
     return 0;
 }
