@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <fstream>
 #include <numeric>
 
 template<typename T>
@@ -92,6 +93,9 @@ class SoftmaxLayer : public Layer<T>
 
             return _cachedInputGrad;
         }
+
+        void save(std::ofstream& outFile) override {};
+
 };
 
 template<typename T>
@@ -149,4 +153,8 @@ class CCELSoftmaxLayer : public Layer<T>
         {
            return outputGradient;
         }
+
+        void save(std::ofstream& outFile) override {};
+        void load(std::ifstream& infile) override {};
+
 };

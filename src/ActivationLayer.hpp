@@ -2,6 +2,7 @@
 
 #include "Layer.hpp"
 #include <algorithm>
+#include <fstream>
 
 template<typename T>
 class ActivationLayer : public Layer<T>
@@ -53,4 +54,7 @@ class ActivationLayer : public Layer<T>
 
             return _cachedInputGrad;
         }
+
+        void save(std::ofstream& outFile) override {};
+        void load(std::ifstream& infile) override {};
 };
