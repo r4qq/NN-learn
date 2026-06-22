@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 
+#include <fstream>
 #include <type_traits>
 
 
@@ -14,4 +15,6 @@ class Layer
         virtual ~Layer() = default;
         virtual Tensor::Tensor<T> forward(const Tensor::Tensor<T>& input) = 0;
         virtual Tensor::Tensor<T> backward(const Tensor::Tensor<T>& outputGradient, T learningRate) = 0;
+        virtual void save(std::ofstream& outFile) = 0;
+        virtual void load(std::ifstream& infile) = 0;
 };

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <random>
+#include <fstream>
 
 template<typename T>
 class DenseLayer : public Layer<T>
@@ -123,5 +124,17 @@ class DenseLayer : public Layer<T>
             _biases -= (_biasGradients * learningRate);
 
             return _cachedInputGrad;
+        }
+
+        void save(std::ofstream& outFile) override 
+        {
+            outFile.write(reinterpret_cast<const char*>(_weights.data()), _weights.size() * sizeof(T));
+            outFile.write(reinterpret_cast<const char*>(_biases.data()), _biases.size() * sizeof(T));
+        };
+
+        void load(std::ifstream& infile) override 
+        {
+            infile.read(reinterpret_cast<char*>(_weights.data()), _weights.size() * sizeof(T));
+            infile.read(reinterpret_cast<char*>(_biases.data()), _biases.size() * sizeof(T));
         }
 };
