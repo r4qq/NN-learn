@@ -1,15 +1,15 @@
-#include "../src/DenseLayer.hpp"
-#include "../src/NeuralNetwork.hpp"
-#include "../src/TanhLayer.hpp"
-#include "../src/SigmoidLayer.hpp"
-#include "../src/Loss.hpp"
+#include "DenseLayer.hpp"
+#include "NeuralNetwork.hpp"
+#include "TanhLayer.hpp"
+#include "SigmoidLayer.hpp"
+#include "Loss.hpp"
 
 #include <cstdint>
 #include <memory>
 #include <iostream>
 
-#define EPOCHS 100000
-#define LEARNINGRATE 0.1f
+#define EPOCHS 10000
+#define LEARNINGRATE 0.5f
 
 int main()
 {
@@ -28,7 +28,7 @@ int main()
     Y(3, 0) = 0.0;
 
     // the network itself
-    NeuralNetwork<float> nn;
+    NeuralNetwork::MLP<float> nn;
 
     // let's add them layers
     nn.addLayer(std::make_unique<DenseLayer<float>>(2, 3));
@@ -40,15 +40,17 @@ int main()
     for (uint64_t i = 0; i < EPOCHS ; ++i) 
     {
         auto res = nn.forward(X);
-        auto err = MSE<float>::calculate(res, Y);
-        if (i % 1000 == 0) { std::cout << "Error: " << err << std::endl;}
-        auto gradTensor = MSE<float>::derivative(res, Y);
+        auto err = Loss::MSE<float>::calculate(res, Y);
+        if (i % 1000 == 0) { std::cout <<"In Epoch: " << i << ", Error: " << err << std::endl;}
+        auto gradTensor = Loss::MSE<float>::derivative(res, Y);
         nn.backward(gradTensor, LEARNINGRATE);
     }
     
     auto predictions = nn.forward(X);
-    std::cout << "\nResults:\nIn: 0,0 -> " << predictions(0,0) 
-              << "\nIn: 0,1 -> " << predictions(1,0) << std::endl;
-
+    std::cout << "\nResults:" 
+              << "\nIn: 0,0 -> " << predictions(0,0) 
+              << "\nIn: 0,1 -> " << predictions(1,0) 
+              << "\nIn: 1,0 -> " << predictions(2,0)
+              << "\nIn: 1,1 -> " << predictions(3,0) << std::endl;
     return 0;
 }

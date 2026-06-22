@@ -2,26 +2,20 @@
 
 ## Note: Project for learning purposes. Not for serious use.
 
-A lightweight, header-only C++ machine learning framework built to demonstrate the core mechanics of neural networks, backpropagation, and layers. It is designed to work seamlessly with the tensor-hpp library for high-performance tensor operations.
+A header-only C++23 machine learning "framework" built from scratch to study core mechanics of neural networks, C++ language, and memory optimization. It relies on the [tensor-hpp](https://github.com/r4qq/tensor-hpp) library for underlying tensor operations and matrix math.
 
 ## Key Features
 
 - Layer-Based Architecture: Easily compose networks using a modular addLayer system.
-- Fully Connected (Dense) Layers: Support for standard weights and biases with Normal distribution initialization.
-- Activation Functions:
-    * ReLU: Rectified Linear Unit for hidden layers.
-    * Sigmoid: Classic sigmoid activation for probability-based outputs.
-    * Tanh: Hyperbolic tangent activation.
-- Automatic Backpropagation: Built-in gradient calculation and weight updates using a simple backward pass.
-- Loss Functions: Implementation of Mean Squared Error (MSE) for regression and basic classification tasks.
-- Generic Programming: Template-based implementation supports any floating-point type (float, double).
-- Modern C++: Leverages C++20 features like std::views::reverse and std::ranges for clean, efficient code.
+- Components: Includes implementations for DenseLayer, ReLU, Sigmoid, Tanh, and standard Softmax.
+- Loss Functions: Mean Squared Error (MSE) and Categorical Cross-Entropy Loss (CCEL). Includes a fused CCELSoftmaxLayer that mathematically cancels the Softmax Jacobian calculation to pass the CCEL gradient directly to the hidden layers.
+- Memory optimizations (?): Layers dynamically pre-allocate memory buffers during the first forward/backward pass. Subsequent training iterations overwrite these buffers, avoiding dynamic heap allocations (new/malloc) during the main training loop. Uses C++23 [[unlikely]] attributes to optimize branch prediction for the allocation checks.
 
 ## Requirements
 
-- Compiler: C++20 or later (required for ranges and views).
-- Hardware: AVX2 support is recommended if compiled with tensor-hpp SIMD optimizations.
-- Dependencies: Requires tensor-hpp headers in the include path.
+- POSIX-compliant OS for <sys/resource.h> memory profiling
+- C++ Compiler: C++23
+ - tensor-hpp library in the include path (AVX2/FMA and OpenMP support required)
 
 ## Installation
 
