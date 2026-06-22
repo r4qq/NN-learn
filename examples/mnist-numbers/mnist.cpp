@@ -21,7 +21,7 @@
 
 int main()
 {
-    uint64_t batchSize = 64;
+    uint64_t batchSize = 256;
 
     auto mnistData = MnistLoader::loadData<float>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
     
@@ -43,7 +43,8 @@ int main()
 
     std::cout << "Dataset size: " << trainImagesAmount + validImagesAmount << " images\n";
     std::cout << "Training dataset size: " << trainImagesAmount << " images\n"; 
-    std::cout << "Running " << EPOCHS << " epochs" << std::endl;
+    std::cout << "Running " << EPOCHS << " epochs" << " \n";
+    std::cout << "Batch size: " << batchSize << '\n'; 
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -133,8 +134,8 @@ int main()
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
     std::cout << "\"Validation\" time: " << duration.count()/1000.0f << "s.\n";
-    std::cout << "Validation error: " << static_cast<float>(correctGuessses) / 
+    std::cout << "Validation error: " << 1 - static_cast<float>(correctGuessses) / 
                                          static_cast<float>(validImagesAmount)
-                                      << " %\n";
+                                      << "\n";
     return 0;
 }
