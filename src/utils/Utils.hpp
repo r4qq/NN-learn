@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sys/resource.h>
 
-namespace Utils 
+namespace NN::Utils 
 {
     inline void printMemoryUsage()
     {

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "config.hpp"
+#include "core/config.hpp"
 
 #include <algorithm>
 #include <numeric>
 #include <cmath>
 #include <functional>
 
-namespace Loss 
+namespace NN::Loss 
 {
     //Mean Squared Error
     template<typename T>

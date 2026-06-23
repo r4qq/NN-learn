@@ -1,32 +1,20 @@
-#pragma once
-
-#include "Layer.hpp"
-#include <fstream>
+#include "core/config.hpp"
+#include "core/NeuralNetwork.hpp"
+#include "core/Layer.hpp"
 #include <memory>
-#include <string>
-#include <utility>
-#include <vector>
 #include <ranges>
 
-template<typename T>
-class NeuralNetwork {
-    public:
-        virtual ~NeuralNetwork<T>() = default;
-        virtual Tensor::Tensor<T> forward(const Tensor::Tensor<T>& initInput) = 0;
-        virtual void backward(const Tensor::Tensor<T>& outputGradient, T learningRate) = 0;
-        virtual void save(std::string fileName) = 0;
-        virtual void load(std::string fileName) = 0;
-};
 
-namespace NN {
+namespace NN::Models 
+{
     template<typename T>
-    class MLP : NeuralNetwork<T>
+    class MLP : NN::Core::NeuralNetwork<T>
     {
     private:
-        std::vector<std::unique_ptr<Layer<T>>> _layers;
+        std::vector<std::unique_ptr<NN::Core::Layer<T>>> _layers;
 
     public:
-        void addLayer(std::unique_ptr<Layer<T>> layer)
+        void addLayer(std::unique_ptr<NN::Core::Layer<T>> layer)
         {
             _layers.push_back(std::move(layer));
         }
