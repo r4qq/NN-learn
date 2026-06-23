@@ -1,10 +1,10 @@
-#include "DenseLayer.hpp"
-#include "NeuralNetwork.hpp"
-#include "ReLuLayer.hpp"
-#include "SoftmaxLayer.hpp"
+#include "layer/DenseLayer.hpp"
+#include "models/MLP.hpp"
+#include "layer/ReLuLayer.hpp"
+#include "layer/SoftmaxLayer.hpp"
 #include "mnistLoader.hpp"
-#include "Loss.hpp"
-#include "Utils.hpp"
+#include "loss/Loss.hpp"
+#include "utils/Utils.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -25,18 +25,18 @@ int main()
 
     auto mnistData = MnistLoader::loadData<float>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
     
-    NN::MLP<float> nn;
+    NN::Models::MLP<float> nn;
 
     uint64_t trainImagesAmount = mnistData.learnData.shape()[0];
     uint64_t inputSize = mnistData.learnData.shape()[1];
     uint64_t validImagesAmount = mnistData.testData.shape()[0];
     uint64_t numClasses = mnistData.learnLabels.shape()[1];
 
-    nn.addLayer(std::make_unique<DenseLayer<float>>(784, 128));
-    nn.addLayer(std::make_unique<ReLuLayer<float>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(784, 128));
+    nn.addLayer(std::make_unique<NN::Layers::ReLuLayer<float>>());
 
-    nn.addLayer(std::make_unique<DenseLayer<float>>(128, 10));
-    nn.addLayer(std::make_unique<CCELSoftmaxLayer<float>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(128, 10));
+    nn.addLayer(std::make_unique<NN::Layers::CCELSoftmaxLayer<float>>());
         
     Tensor::Tensor<float> batchX({batchSize, 784});
     Tensor::Tensor<float> batchY({batchSize, 10});
@@ -73,15 +73,15 @@ int main()
             std::copy(yStart, yEnd, batchY.data());
 
             auto preds = nn.forward(batchX);
-            auto loss = Loss::CCEL<float>::calculate(preds, batchY);
-            auto lossGrad = Loss::CCEL<float>::derivative(preds, batchY);
+            auto loss = NN::Loss::CCEL<float>::calculate(preds, batchY);
+            auto lossGrad = NN::Loss::CCEL<float>::derivative(preds, batchY);
             nn.backward(lossGrad, LEARNINGRATE);
 
             epochLoss += loss;
         }
         std::cout << "Epoch " << epoch + 1 << " Average Loss: " 
               << epochLoss / (static_cast<float>(trainImagesAmount) / batchSize) << "\n";
-        Utils::printMemoryUsage();
+        NN::Utils::printMemoryUsage();
     }
 
     auto endTime = std::chrono::high_resolution_clock::now();
