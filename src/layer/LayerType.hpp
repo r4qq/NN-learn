@@ -1,4 +1,6 @@
-enum class LayerType 
+#include <cstdint>
+
+enum class LayerType : uint32_t
 {
     Dense = 1,
     ReLu = 2,

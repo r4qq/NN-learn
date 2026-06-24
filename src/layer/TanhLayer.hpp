@@ -24,7 +24,7 @@ namespace NN::Layers
             void save(std::ofstream& outFile) override 
             {
                 LayerType type = LayerType::Tanh;
-                outFile.write(reinterpret_cast<char*>(&type), sizeof(int));
+                outFile.write(reinterpret_cast<char*>(&type), sizeof(uint32_t));
             };
             void load(std::ifstream& infile) override {};
     };

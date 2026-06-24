@@ -133,7 +133,7 @@ namespace NN::Layers
             void save(std::ofstream& outFile) override 
             {
                 LayerType type = LayerType::Dense;
-                outFile.write(reinterpret_cast<const char*>(&type), sizeof(int));
+                outFile.write(reinterpret_cast<const char*>(&type), sizeof(uint32_t));
 
                 uint64_t inSize = _weights.shape()[0];
                 uint64_t outSize = _weights.shape()[1];
