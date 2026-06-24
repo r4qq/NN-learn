@@ -9,7 +9,7 @@ namespace NN::Core
     class NeuralNetwork 
     {
         public:
-            virtual ~NeuralNetwork<T>() = default;
+            virtual ~NeuralNetwork() = default;
             virtual Tensor::Tensor<T> forward(const Tensor::Tensor<T>& initInput) = 0;
             virtual void backward(const Tensor::Tensor<T>& outputGradient, T learningRate) = 0;
             virtual void save(std::string fileName) = 0;
