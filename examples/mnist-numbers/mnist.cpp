@@ -137,5 +137,7 @@ int main()
     std::cout << "Validation error: " << 1 - static_cast<float>(correctGuessses) / 
                                          static_cast<float>(validImagesAmount)
                                       << "\n";
+
+    NN::Utils::saveModel(nn, "model.bin");
     return 0;
 }
