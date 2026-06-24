@@ -1,5 +1,6 @@
 #include "core/Layer.hpp"
 #include "core/config.hpp"
+#include "LayerType.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -156,7 +157,11 @@ namespace NN::Layers
             return outputGradient;
             }
 
-            void save(std::ofstream& outFile) override {};
+            void save(std::ofstream& outFile) override 
+            {
+                LayerType type = LayerType::Softmax;
+                outFile.write(reinterpret_cast<char*>(&type), sizeof(int));
+            };
             void load(std::ifstream& infile) override {};
 
     };

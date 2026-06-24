@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ActivationLayer.hpp"
+#include "LayerType.hpp"
 
 namespace NN::Layers 
 {
@@ -17,5 +18,12 @@ namespace NN::Layers
             {
                 return x > 0 ? T{1} : T{0};
             }
+
+            void save(std::ofstream& outFile) override 
+            {
+                LayerType type = LayerType::ReLu;
+                outFile.write(reinterpret_cast<char*>(&type), sizeof(int));
+            };
+            void load(std::ifstream& infile) override {};
     };
 }

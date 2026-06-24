@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ActivationLayer.hpp"
+#include "LayerType.hpp"
 #include <cmath>
 
 namespace NN::Layers 
@@ -19,5 +20,12 @@ namespace NN::Layers
                 T xTahn = std::tanh(x);
                 return 1 - (xTahn * xTahn);
             }
+
+            void save(std::ofstream& outFile) override 
+            {
+                LayerType type = LayerType::Tanh;
+                outFile.write(reinterpret_cast<char*>(&type), sizeof(int));
+            };
+            void load(std::ifstream& infile) override {};
     };
 }

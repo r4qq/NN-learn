@@ -1,10 +1,12 @@
 #pragma once
 
 #include "core/Layer.hpp"
+#include "LayerType.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <random>
 #include <fstream>
+#include <sys/types.h>
 
 namespace NN::Layers 
 {
@@ -130,6 +132,14 @@ namespace NN::Layers
 
             void save(std::ofstream& outFile) override 
             {
+                LayerType type = LayerType::Dense;
+                outFile.write(reinterpret_cast<const char*>(&type), sizeof(int));
+
+                uint64_t inSize = _weights.shape()[0];
+                uint64_t outSize = _weights.shape()[1];
+                outFile.write(reinterpret_cast<const char*>(&inSize), sizeof(uint64_t));
+                outFile.write(reinterpret_cast<const char*>(&outSize), sizeof(uint64_t));
+                
                 outFile.write(reinterpret_cast<const char*>(_weights.data()), _weights.size() * sizeof(T));
                 outFile.write(reinterpret_cast<const char*>(_biases.data()), _biases.size() * sizeof(T));
             };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ActivationLayer.hpp"
+#include "LayerType.hpp"
 #include <cmath>
 
 namespace NN::Layers 
@@ -19,5 +20,12 @@ namespace NN::Layers
                 T xF = 1 / (1 + std::exp(-x));
                 return xF * (1 - xF);
             }
+
+            void save(std::ofstream& outFile) override 
+            {
+                LayerType type = LayerType::Sigmoid;
+                outFile.write(reinterpret_cast<char*>(&type), sizeof(int));
+            };
+            void load(std::ifstream& infile) override {};
     };
 }
