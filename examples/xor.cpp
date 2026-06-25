@@ -1,8 +1,8 @@
-#include "DenseLayer.hpp"
-#include "NeuralNetwork.hpp"
-#include "TanhLayer.hpp"
-#include "SigmoidLayer.hpp"
-#include "Loss.hpp"
+#include "layer/DenseLayer.hpp"
+#include "models/MLP.hpp"
+#include "layer/TanhLayer.hpp"
+#include "layer/SigmoidLayer.hpp"
+#include "loss/Loss.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -28,21 +28,21 @@ int main()
     Y(3, 0) = 0.0;
 
     // the network itself
-    NN::MLP<float> nn;
+    NN::Models::MLP<float> nn;
 
     // let's add them layers
-    nn.addLayer(std::make_unique<DenseLayer<float>>(2, 3));
-    nn.addLayer(std::make_unique<TanhLayer<float>>());
-    nn.addLayer(std::make_unique<DenseLayer<float>>(3, 1));
-    nn.addLayer(std::make_unique<SigmoidLayer<float>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(2, 3));
+    nn.addLayer(std::make_unique<NN::Layers::TanhLayer<float>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(3, 1));
+    nn.addLayer(std::make_unique<NN::Layers::SigmoidLayer<float>>());
 
     std::cout << "Running " << EPOCHS << " epochs" << std::endl;
     for (uint64_t i = 0; i < EPOCHS ; ++i) 
     {
         auto res = nn.forward(X);
-        auto err = Loss::MSE<float>::calculate(res, Y);
+        auto err = NN::Loss::MSE<float>::calculate(res, Y);
         if (i % 1000 == 0) { std::cout <<"In Epoch: " << i << ", Error: " << err << std::endl;}
-        auto gradTensor = Loss::MSE<float>::derivative(res, Y);
+        auto gradTensor = NN::Loss::MSE<float>::derivative(res, Y);
         nn.backward(gradTensor, LEARNINGRATE);
     }
     

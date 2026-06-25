@@ -10,6 +10,7 @@ A header-only C++23 machine learning "framework" built from scratch to study cor
 - Components: Includes implementations for DenseLayer, ReLU, Sigmoid, Tanh, and standard Softmax.
 - Loss Functions: Mean Squared Error (MSE) and Categorical Cross-Entropy Loss (CCEL). Includes a fused CCELSoftmaxLayer that mathematically cancels the Softmax Jacobian calculation to pass the CCEL gradient directly to the hidden layers.
 - Memory optimizations (?): Layers dynamically pre-allocate memory buffers during the first forward/backward pass. Subsequent training iterations overwrite these buffers, avoiding dynamic heap allocations (new/malloc) during the main training loop. Uses C++23 [[unlikely]] attributes to optimize branch prediction for the allocation checks.
+- Model Serialization: Binary saving and loading. Dynamically reconstructs architectures using a Layer Factory pattern without needing to hardcode layer sizes during instantiation.
 
 ## Requirements
 
@@ -27,14 +28,14 @@ This is a header-only library. To use it, simply include the src/ directory in y
 You can stack layers using std::unique_ptr to build your architecture.
 
 ```cpp
-#include "NeuralNetwork.hpp"
-#include "DenseLayer.hpp"
-#include "TanhLayer.hpp"
+#include "models/MLP.hpp"
+#include "layers/DenseLayer.hpp"
+#include "layers/TanhLayer.hpp"
 
-NeuralNetwork<float> nn;
-nn.addLayer(std::make_unique<DenseLayer<float>>(2, 3)); // 2 inputs, 3 neurons
-nn.addLayer(std::make_unique<TanhLayer<float>>());
-nn.addLayer(std::make_unique<DenseLayer<float>>(3, 1)); // Output layer
+NN::Models::MLP<float> nn;
+nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(2, 3)); // 2 inputs, 3 neurons
+nn.addLayer(std::make_unique<NN::Layers::TanhLayer<float>>());
+nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(3, 1)); // Output layer
 ```
 
 ### 2. Training loop
@@ -47,12 +48,25 @@ for (uint64_t i = 0; i < EPOCHS; ++i)
     auto res = nn.forward(X);
     
     // Calculate loss and gradient
-    auto err = MSE<float>::calculate(res, Y);
-    auto gradTensor = MSE<float>::derivative(res, Y);
+    auto err = NN::Loss::MSE<float>::calculate(res, Y);
+    auto gradTensor = NN::Loss::MSE<float>::derivative(res, Y);
     
     // Backpropagate and update weights
     nn.backward(gradTensor, LEARNINGRATE);
 }
+```
+
+### 3. Saving and loading the "model"
+You can save the trained weights and architecture to a binary file, and load them back dynamically.
+```cpp
+#include "utils/Utils.hpp"
+
+// Save the model to disk
+NN::Utils::SaveModel(nn, "model.bin");
+
+// Load the model dynamically (architecture is rebuilt automatically)
+auto loadedModel = NN::Utils::LoadModel<float>("model.bin");
+auto predictions = loadedModel->forward(newInputData);
 ```
 
 ## Building examples
