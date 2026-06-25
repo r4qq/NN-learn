@@ -18,7 +18,9 @@ namespace NN::Utils
     {
         struct rusage usage;
         getrusage(RUSAGE_SELF, &usage);
-        std::cout << "Peak mem usage: " << usage.ru_maxrss / 1024.0 << " MB\n";
+        std::cout << "Peak mem usage: "
+                  << usage.ru_maxrss / 1024.0 
+                  << " MB\n";
     }
 
     template<typename T> 
@@ -26,10 +28,11 @@ namespace NN::Utils
     {
         nn.save(fileName);
         std::filesystem::path path = fileName;
-        std::cout << "Model saved as: " << fileName 
-                                        << " file size: " 
-                                        << std::filesystem::file_size(path) / 1000.0f 
-                                        << "kB\n";
+        std::cout << "Model saved as: " 
+                  << fileName 
+                  << " file size: " 
+                  << std::filesystem::file_size(path) / 1000.0f 
+                  << "kB\n";
     }
 
     template<typename T>
@@ -51,11 +54,11 @@ namespace NN::Utils
         switch (type) 
         {
             case ModelType::MLP :
-                NN::Models::MLP<T> nnMLP;
-                nn = nnMLP.losd(inFile);
+                nn = std::make_unique<NN::Models::MLP<T>>();
+                nn->load(inFile);
                 break;
         }
-
+        std::cout << "Model: " << fileName << " loaded\n"; 
         return nn;
     }
 }

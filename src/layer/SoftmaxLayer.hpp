@@ -1,3 +1,5 @@
+#pragma once
+
 #include "core/Layer.hpp"
 #include "core/config.hpp"
 #include "LayerType.hpp"
@@ -98,6 +100,7 @@ namespace NN::Layers
             }
 
             void save(std::ofstream& outFile) override {};
+            void load(std::ifstream& infile) override {};
 
     };
 
