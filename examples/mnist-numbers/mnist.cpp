@@ -81,7 +81,7 @@ int main()
         }
         std::cout << "Epoch " << epoch + 1 << " Average Loss: " 
               << epochLoss / (static_cast<float>(trainImagesAmount) / batchSize) << "\n";
-        NN::Utils::printMemoryUsage();
+        NN::Utils::PrintMemoryUsage();
     }
 
     auto endTime = std::chrono::high_resolution_clock::now();
@@ -91,7 +91,7 @@ int main()
 
 
     //valid loop
-    std::cout << "Training dataset size: " << validImagesAmount << " images\n"; 
+    std::cout << "Validation dataset size: " << validImagesAmount << " images\n"; 
     startTime = std::chrono::high_resolution_clock::now();
     uint64_t correctGuessses = 0;
     for(uint64_t i = 0; i < validImagesAmount; i += batchSize)
@@ -138,6 +138,6 @@ int main()
                                          static_cast<float>(validImagesAmount)
                                       << "\n";
 
-    NN::Utils::saveModel(nn, "model.bin");
+    NN::Utils::SaveModel(nn, "model.bin");
     return 0;
 }
