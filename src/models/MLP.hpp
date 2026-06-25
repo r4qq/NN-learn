@@ -4,6 +4,7 @@
 #include "core/NeuralNetwork.hpp"
 #include "core/Layer.hpp"
 #include "ModelType.hpp"
+#include "layer/LayerType.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <memory>
@@ -62,15 +63,21 @@ namespace NN::Models
             outFile.close();
         }
 
-        void load(std::string fileName) override
+        std::unique_ptr<NN::Models::MLP<T>> load(std::ifstream inFile) override
         {
-            std::ifstream inFile;
-            inFile.open(fileName, std::ios::binary);
-            for (const auto& layer : _layers)
+            auto nn = std::make_unique(NN::Models::MLP<T>());
+        
+            size_t layersAmount;
+            inFile.read(reinterpret_cast<char*>(&layersAmount), sizeof(size_t)); 
+        
+            //LayerType type;
+            for (uint64_t i = 0; i < layersAmount; ++i) 
             {
-                layer->load(inFile);
+                
             }
+            
             inFile.close();
+            return nn;
         }
     };
 }
