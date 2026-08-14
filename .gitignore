@@ -1,3 +1,4 @@
 builds/
 compile_commands.json
 .cache/
+*.bin
