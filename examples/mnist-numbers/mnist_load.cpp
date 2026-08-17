@@ -1,9 +1,13 @@
 #include "mnistLoader.hpp"
+#include "tensor-hpp/Tensor-simd-block-multi.hpp"
 #include "utils/Utils.hpp"
+#include <cmath>
+#include <cstdint>
 
 #define TRAIN_DATA "examples/mnist-numbers/data/train-images.idx3-ubyte"
 #define TRAIN_LABELS "examples/mnist-numbers/data/train-labels.idx1-ubyte"
 #define TRAIN_SPLIT 0.5
+#define NUM_TO_DRAW 10 
 
 int main() 
 {
@@ -65,5 +69,39 @@ int main()
                                          static_cast<float>(validImagesAmount)
                                       << "\n";
 
+    //printing results
+    const std::string asciiGreyRamp = " .:#";
+
+    Tensor::Tensor<float> visualX({NUM_TO_DRAW, inputSize});
+    Tensor::Tensor<float> visualY({NUM_TO_DRAW, numClasses});
+
+    std::copy(mnistData.testData.data(), mnistData.testData.data() + (NUM_TO_DRAW * inputSize), visualX.data());
+    std::copy(mnistData.testLabels.data(), mnistData.testLabels.data() + (NUM_TO_DRAW * numClasses), visualY.data());
+
+    auto visualPreds = nn->forward(visualX);
+
+    for (uint64_t i = 0; i < NUM_TO_DRAW; ++i) 
+    {
+        auto predRowStart = visualPreds.data() + (i * numClasses);
+        auto trueLabelRow = visualY.data() +  (i * numClasses);
+
+        auto predDigit = std::distance(predRowStart, std::max_element(predRowStart, predRowStart + numClasses));
+        auto trueDigit = std::distance(trueLabelRow, std::max_element(trueLabelRow, trueLabelRow + numClasses));
+
+        for(uint64_t y = 0; y < 28; ++ y)
+        {
+            for(uint64_t x = 0; x < 28; ++x)
+            {
+                uint64_t pixelIdx = (i * 784) + (y * 28) + x;
+                float pixelVal = visualX.data()[pixelIdx];
+                char asciiIdx = std::round(pixelVal * (asciiGreyRamp.size() - 1));
+                std::cout << asciiGreyRamp[asciiIdx];
+                std::cout << asciiGreyRamp[asciiIdx];
+            }    
+            std::cout << "\n";
+        }
+
+        std::cout << "Predicted: " << predDigit << ", actual: " << trueDigit << "\n";
+    }
     return 0;
 }
