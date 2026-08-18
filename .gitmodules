@@ -1,3 +1,6 @@
 [submodule "include/tensor-hpp"]
 	path = include/tensor-hpp
 	url = https://github.com/r4qq/tensor-hpp
+[submodule "include/stb"]
+	path = include/stb
+	url = https://github.com/nothings/stb
