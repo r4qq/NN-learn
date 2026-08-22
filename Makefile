@@ -1,6 +1,6 @@
 CXX := clang++
 
-CXXFLAGS := -O3 -fopenmp -march=native -ffast-math -mfma -std=c++23 -Wall -Werror -Iinclude -Isrc
+CXXFLAGS := -O3 -fopenmp -march=native -ffast-math -mfma -std=c++23 -Wall -Werror -isystem include -Isrc
 
 EXAMPLE_DIR := examples
 BUILD_DIR := builds
