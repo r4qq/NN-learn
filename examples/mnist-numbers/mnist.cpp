@@ -4,7 +4,8 @@
 #include "layer/SoftmaxLayer.hpp"
 #include "mnistLoader.hpp"
 #include "loss/Loss.hpp"
-#include "utils/Utils.hpp"
+#include "utils/ModelSerialization.hpp"
+#include "utils/Logging.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -81,7 +82,7 @@ int main()
         }
         std::cout << "Epoch " << epoch + 1 << " Average Loss: " 
               << epochLoss / (static_cast<float>(trainImagesAmount) / batchSize) << "\n";
-        NN::Utils::PrintMemoryUsage();
+        NN::Utils::Logging::PrintMemoryUsage();
     }
 
     auto endTime = std::chrono::high_resolution_clock::now();
@@ -138,6 +139,6 @@ int main()
                                          static_cast<float>(validImagesAmount)
                                       << "\n";
 
-    NN::Utils::SaveModel(nn, "model.bin");
+    NN::Utils::Serialization::SaveModel(nn, "model.bin");
     return 0;
 }

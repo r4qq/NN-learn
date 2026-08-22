@@ -1,6 +1,6 @@
 #include "mnistLoader.hpp"
 #include "tensor-hpp/Tensor-simd-block-multi.hpp"
-#include "utils/Utils.hpp"
+#include "utils/ModelSerialization.hpp"
 #include <cmath>
 #include <cstdint>
 
@@ -17,7 +17,7 @@ int main()
     uint64_t validImagesAmount = mnistData.testData.shape()[0];
     uint64_t numClasses = mnistData.learnLabels.shape()[1];
     
-    auto nn = NN::Utils::LoadModel<float>("model.bin");
+    auto nn = NN::Utils::Serialization::LoadModel<float>("model.bin");
     
     Tensor::Tensor<float> batchX({batchSize, 784});
     Tensor::Tensor<float> batchY({batchSize, 10});
