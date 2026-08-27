@@ -139,6 +139,6 @@ int main()
                                          static_cast<float>(validImagesAmount)
                                       << "\n";
 
-    NN::Utils::Serialization::SaveModel(nn, "model.bin");
+    NN::Utils::Serialization::SaveModel(nn, "model_mnist.bin");
     return 0;
 }
