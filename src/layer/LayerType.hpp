@@ -9,5 +9,6 @@ enum class LayerType : uint32_t
     Sigmoid = 3,
     Softmax = 4,
     Tanh = 5,
-    CCELSoftmax = 6
+    CCELSoftmax = 6,
+    LeakyReLu = 7
 };
