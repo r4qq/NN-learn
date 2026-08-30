@@ -3,6 +3,7 @@
 #include "core/Layer.hpp"
 #include "layer/DenseLayer.hpp"
 #include "layer/LayerType.hpp"
+#include "layer/LeakyReLuLayer.hpp"
 #include "layer/ReLuLayer.hpp"
 #include "layer/SigmoidLayer.hpp"
 #include "layer/TanhLayer.hpp"
@@ -55,6 +56,11 @@ namespace NN::Layers
                     case LayerType::CCELSoftmax:
                     {
                         auto layerPtr = std::make_unique<NN::Layers::CCELSoftmaxLayer<T>>();
+                        return layerPtr;
+                    }
+                    case LayerType::LeakyReLu:
+                    {
+                        auto layerPtr = std::make_unique<NN::Layers::LeakyReLuLayer<T>>();
                         return layerPtr;
                     }
                     default:
