@@ -1,5 +1,5 @@
 #include "mnistLoader.hpp"
-#include "tensor-hpp/Tensor-simd-block-multi.hpp"
+#include "core/config.hpp"
 #include "utils/ModelSerialization.hpp"
 #include <cmath>
 #include <cstdint>

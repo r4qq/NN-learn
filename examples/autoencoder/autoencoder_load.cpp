@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <random>
-#include <tensor-hpp/Tensor-simd-block-multi.hpp>
+#include <core/config.hpp>
 
 constexpr auto TRAIN_DATA = "examples/mnist-numbers/data/train-images.idx3-ubyte";
 constexpr auto TRAIN_LABELS = "examples/mnist-numbers/data/train-labels.idx1-ubyte";
