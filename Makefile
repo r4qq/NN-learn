@@ -1,6 +1,7 @@
 CXX := clang++
 
 CXXFLAGS := -O3 -fopenmp -march=native -ffast-math -mfma -std=c++23 -Wall -Werror -isystem include -Isrc
+GNUMAKEFLAGS += -j$(shell nproc 2>/dev/null)
 
 EXAMPLE_DIR := examples
 BUILD_DIR := builds
@@ -15,7 +16,7 @@ all: $(EXAMPLE_BINS)
 
 $(BUILD_DIR)/%:
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $(shell find $(EXAMPLE_DIR) -name "$*.cpp") -o $@
+	$(CXX) $(CXXFLAGS) $(GNUMAKEFLAGS) $(shell find $(EXAMPLE_DIR) -name "$*.cpp") -o $@
 	@echo "Built $@ successfully!"
 
 clean:
