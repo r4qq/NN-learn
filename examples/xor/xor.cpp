@@ -28,7 +28,7 @@ int main()
     Y(3, 0) = 0.0;
 
     // the network itself
-    NN::Models::MLP<float> nn;
+    NN::Models::Sequential<float> nn;
 
     // let's add them layers
     nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(2, 3));

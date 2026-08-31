@@ -43,8 +43,8 @@ namespace NN::Utils::Serialization
 
         switch (type) 
         {
-            case ModelType::MLP :
-                nn = std::make_unique<NN::Models::MLP<T>>();
+            case ModelType::Sequential :
+                nn = std::make_unique<NN::Models::Sequential<T>>();
                 nn->load(inFile);
                 break;
         }

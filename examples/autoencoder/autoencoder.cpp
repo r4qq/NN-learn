@@ -26,7 +26,7 @@ int main()
     uint64_t trainImagesAmount = mnistData.learnData.shape()[0];
     uint64_t inputSize = mnistData.learnData.shape()[1];
 
-    NN::Models::MLP<float> nn;
+    NN::Models::Sequential<float> nn;
 
     nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(784, 256));
     nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
