@@ -2,7 +2,7 @@
 #include "layer/LeakyReLuLayer.hpp"
 #include "layer/SigmoidLayer.hpp"
 #include "loss/Loss.hpp"
-#include "models/MLP.hpp"
+#include "models/Sequential.hpp"
 #include "../mnist-numbers/mnistLoader.hpp"
 #include "core/config.hpp"
 #include "utils/Logging.hpp"

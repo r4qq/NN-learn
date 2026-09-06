@@ -1,5 +1,5 @@
 #include "layer/DenseLayer.hpp"
-#include "models/MLP.hpp"
+#include "models/Sequential.hpp"
 #include "layer/TanhLayer.hpp"
 #include "layer/SigmoidLayer.hpp"
 #include "loss/Loss.hpp"

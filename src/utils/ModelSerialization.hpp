@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/NeuralNetwork.hpp"
-#include "models/MLP.hpp"
+#include "models/Sequential.hpp"
 #include "models/ModelType.hpp"
 #include <cstdint>
 #include <filesystem>

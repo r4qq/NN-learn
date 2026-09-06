@@ -1,5 +1,5 @@
 #include "layer/DenseLayer.hpp"
-#include "models/MLP.hpp"
+#include "models/Sequential.hpp"
 #include "layer/ReLuLayer.hpp"
 #include "layer/SoftmaxLayer.hpp"
 #include "mnistLoader.hpp"
