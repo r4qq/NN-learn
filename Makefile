@@ -1,7 +1,7 @@
 CXX := g++
 
 CXXFLAGS := -O3 -fopenmp -march=native -ffast-math -std=c++23 -Wall -Werror -isystem include -Isrc
-GNUMAKEFLAGS += -j$(shell nproc 2>/dev/null)
+GNUMAKEFLAGS := -j$(shell nproc 2>/dev/null)
 
 EXAMPLE_DIR := examples
 BUILD_DIR := builds
