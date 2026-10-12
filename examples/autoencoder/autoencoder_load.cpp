@@ -34,7 +34,7 @@ int main()
                     });
 
     //loading model
-    auto nn = NN::Utils::Serialization::LoadModel<float>("model_autoencoder.bin");
+    auto nn = NN::Utils::Serialization::LoadModel<float>("model_hd_autoencoder.bin");
 
     const std::string asciiGreyRamp = ".:-=+*#%@";
 

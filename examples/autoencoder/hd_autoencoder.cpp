@@ -7,11 +7,9 @@
 #include "core/config.hpp"
 #include "utils/Logging.hpp"
 #include "utils/ModelSerialization.hpp"
-
 #include <algorithm>
 #include <cstdint>
 #include <chrono>
-#include <tensor-hpp/Tensor-simd-block-multi.hpp>
 
 constexpr auto TRAIN_DATA = "examples/mnist-numbers/data/train-images.idx3-ubyte";
 constexpr auto TRAIN_LABELS = "examples/mnist-numbers/data/train-labels.idx1-ubyte";
@@ -22,55 +20,55 @@ constexpr uint64_t BATCHSIZE = 256u;
 
 int main()
 {
-    auto mnistData = MnistLoader::loadData<double>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
+    auto mnistData = MnistLoader::loadData<float>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
     uint64_t trainImagesAmount = mnistData.learnData.shape()[0];
     uint64_t inputSize = mnistData.learnData.shape()[1];
 
-    NN::Models::Sequential<double> nn;
+    NN::Models::Sequential<float> nn;
 
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(784, 512));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(784, 512));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(512, 256));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(512, 256));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(256, 128));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(256, 128));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(128, 64));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(128, 64));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
 
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(64, 32));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(64, 32));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(32, 16));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(32, 16));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(16, 8));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(16, 8));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
 
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(8, 16));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(8, 16));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(16, 32));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(16, 32));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(32, 64));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(32, 64));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(64, 128));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(64, 128));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(128, 256));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(128, 256));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
     
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(256, 512));
-    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(256, 512));
+    nn.addLayer(std::make_unique<NN::Layers::LeakyReLuLayer<float>>());
 
-    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<double>>(512, 784));
-    nn.addLayer(std::make_unique<NN::Layers::SigmoidLayer<double>>());
+    nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(512, 784));
+    nn.addLayer(std::make_unique<NN::Layers::SigmoidLayer<float>>());
 
-    Tensor::Tensor<double> batchX({BATCHSIZE, inputSize});
+    Tensor::Tensor<float> batchX({BATCHSIZE, inputSize});
 
     std::cout << "Training loop\n";
     std::cout << "Running " << EPOCHS << " epochs" << " \n";
@@ -81,14 +79,14 @@ int main()
 
     for (uint64_t epoch = 0; epoch < EPOCHS; ++epoch) 
     {
-        double epochLoss = 0.0f;
+        float epochLoss = 0.0f;
         for (uint64_t j = 0; j < trainImagesAmount; j += BATCHSIZE) 
         {
             uint64_t currentBatchSize = std::min(BATCHSIZE, trainImagesAmount - j);
             
             if (batchX.shape()[0] != currentBatchSize) [[unlikely]] 
             {
-                batchX = Tensor::Tensor<double>({currentBatchSize, inputSize});
+                batchX = Tensor::Tensor<float>({currentBatchSize, inputSize});
             }
 
             auto xStart = mnistData.learnData.data() + (j * inputSize);
@@ -96,14 +94,14 @@ int main()
             std::copy(xStart, xEnd, batchX.data());
 
             auto preds = nn.forward(batchX);
-            auto loss = NN::Loss::MSE<double>::calculate(preds, batchX);
-            auto lossGrad = NN::Loss::MSE<double>::derivative(preds, batchX);
+            auto loss = NN::Loss::MSE<float>::calculate(preds, batchX);
+            auto lossGrad = NN::Loss::MSE<float>::derivative(preds, batchX);
             nn.backward(lossGrad, LEARNINGRATE);
 
             epochLoss += loss;
         }
         std::cout << "Epoch " << epoch + 1 << " Average Loss: " 
-              << epochLoss / (static_cast<double>(trainImagesAmount) / BATCHSIZE) << "\n";
+              << epochLoss / (static_cast<float>(trainImagesAmount) / BATCHSIZE) << "\n";
         NN::Utils::Logging::PrintMemoryUsage();
     }
 
@@ -116,7 +114,7 @@ int main()
     std::cout << "Validation dataset size: " << validImagesAmount << " images\n"; 
     std::cout << "Batch size: " << BATCHSIZE << '\n';
     
-    double epochLoss = 0.0f;
+    float epochLoss = 0.0f;
     startTime = std::chrono::high_resolution_clock::now();
 
   
@@ -126,7 +124,7 @@ int main()
         
         if (batchX.shape()[0] != currentBatchSize) [[unlikely]] 
         {
-            batchX = Tensor::Tensor<double>({currentBatchSize, inputSize});
+            batchX = Tensor::Tensor<float>({currentBatchSize, inputSize});
         }
 
         auto xStart = mnistData.testData.data() + (i * inputSize);
@@ -134,7 +132,7 @@ int main()
         std::copy(xStart, xEnd, batchX.data());
 
         auto preds = nn.forward(batchX);
-        auto loss = NN::Loss::MSE<double>::calculate(preds, batchX);
+        auto loss = NN::Loss::MSE<float>::calculate(preds, batchX);
         
         epochLoss += loss;
     }
@@ -142,7 +140,7 @@ int main()
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
     std::cout << "\"Validation\" time: " << duration.count()/1000.0f << "s.\n";
     std::cout << "Validation Average Loss: " 
-          << epochLoss / (static_cast<double>(validImagesAmount) / BATCHSIZE) << "\n";
+          << epochLoss / (static_cast<float>(validImagesAmount) / BATCHSIZE) << "\n";
 
     NN::Utils::Serialization::SaveModel(nn, "model_hd_autoencoder.bin");
 }
