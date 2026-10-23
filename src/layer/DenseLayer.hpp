@@ -38,7 +38,7 @@ namespace NN::Layers
                 
             {
                 _biases.fill(T{0});
-                _biasGradients(T{0});
+                _biasGradients.fill(T{0});
 
                 std::random_device rd;
                 std::mt19937 gen(rd());
