@@ -18,11 +18,11 @@ namespace NN::Layers::Initialization
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        T stdDev = std::sqrt(T{2} / T{inSize});
+        T stdDev = std::sqrt(static_cast<T>(2) / static_cast<T>(inSize));
 
         std::normal_distribution<T> dist(T{0}, stdDev);
 
-        std::generate_n(inputTensor.data(), inputTensor.size(), [&](){return dist(gen());});
+        std::generate_n(inputTensor.data(), inputTensor.size(), [&](){return dist(gen);});
     }
 
     template<typename T>
