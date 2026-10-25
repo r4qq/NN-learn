@@ -24,6 +24,34 @@ namespace NN::Layers
             Tensor::Tensor<T> _biasGradients;    
 
         public:
+            DenseLayer(uint64_t inputSize, uint64_t outputSize)
+            :   _weights({inputSize, outputSize}),
+                _biases({outputSize}),
+                _cacheInput({1}),
+                _weightGradients({inputSize, outputSize}),
+                _cachedOutput({1}),
+                _transposedInput({1}),
+                _transposedWeights({1}),
+                _cachedInputGrad({1}),
+                _biasGradients({outputSize})
+
+            {
+                _biases.fill(T{0});
+                _biasGradients.fill(T{0});
+
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::normal_distribution<T> dist(0.0, 0.1);
+
+
+                std::generate_n(_weights.data(), 
+                                _weights.size(), 
+                                [&dist, &gen](){
+                                    return dist(gen);
+                                });
+
+            }
+
             DenseLayer(uint64_t inputSize, uint64_t outputSize, NN::Layers::Initialization::InitFunc<T> weightsInit, NN::Layers::Initialization::InitFunc<T> biasesInit)
             :   _weights({inputSize, outputSize}),
                 _biases({outputSize}),
@@ -36,7 +64,7 @@ namespace NN::Layers
                 _biasGradients({outputSize})
                 
             {
-                weightsInit(_weights.data(), inputSize, outputSize);
+                weightsInit(_weights, inputSize, outputSize);
                 biasesInit(_biases, inputSize, outputSize);
                 
                 _biasGradients.fill(T{0});
