@@ -120,5 +120,5 @@ int main()
     std::cout << "Validation Average Loss: " 
           << epochLoss / (static_cast<float>(validImagesAmount) / BATCHSIZE) << "\n";
 
-    NN::Utils::Serialization::SaveModel(nn, "model_autoencoder.bin");
+    NN::Utils::Serialization::SaveModel(nn, "model_autoencoder_init_test.bin");
 }
