@@ -17,7 +17,7 @@ constexpr auto TRAIN_DATA = "examples/mnist-numbers/data/train-images.idx3-ubyte
 constexpr auto TRAIN_LABELS = "examples/mnist-numbers/data/train-labels.idx1-ubyte";
 constexpr auto TRAIN_SPLIT = 0.8;
 constexpr auto EPOCHS = 20;
-constexpr auto LEARNINGRATE = 0.075;
+constexpr auto LEARNINGRATE = 5.0;
 constexpr uint64_t BATCHSIZE = 256u;
 
 int main()

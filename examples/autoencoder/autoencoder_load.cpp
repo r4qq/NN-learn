@@ -1,19 +1,30 @@
 #include "../mnist-numbers/mnistLoader.hpp"
 #include "core/config.hpp"
 #include "utils/ModelSerialization.hpp"
+#include <core/config.hpp>
 
 #include <algorithm>
 #include <cstdint>
 #include <random>
-#include <core/config.hpp>
+#include <string>
+#include <vector>
 
 constexpr auto TRAIN_DATA = "examples/mnist-numbers/data/train-images.idx3-ubyte";
 constexpr auto TRAIN_LABELS = "examples/mnist-numbers/data/train-labels.idx1-ubyte";
 constexpr auto TRAIN_SPLIT = 0.5;
 constexpr auto NUM_TO_DRAW = 10;
 
-int main()
+int main(int argc, char* argv[])
 {
+    //input is model filename
+    if (argc < 2)
+    {
+        throw std::invalid_argument("Just one arg pls");
+        return 1;
+    }
+
+    const std::string model_filename(argv[1]);
+
     auto mnistData = MnistLoader::loadData<float>(TRAIN_DATA, TRAIN_LABELS, TRAIN_SPLIT);
     uint64_t inputSize = mnistData.learnData.shape()[1];
 
@@ -34,7 +45,7 @@ int main()
                     });
 
     //loading model
-    auto nn = NN::Utils::Serialization::LoadModel<float>("model_hd_autoencoder.bin");
+    auto nn = NN::Utils::Serialization::LoadModel<float>(model_filename);
 
     const std::string asciiGreyRamp = ".:-=+*#%@";
 
