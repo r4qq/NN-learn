@@ -4,5 +4,5 @@
 
 enum class ModelType : uint32_t
 {
-    MLP = 1
+    Sequential = 1
 };

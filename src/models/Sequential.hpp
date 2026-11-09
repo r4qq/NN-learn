@@ -15,7 +15,7 @@
 namespace NN::Models 
 {
     template<typename T>
-    class MLP : public NN::Core::NeuralNetwork<T>
+    class Sequential : public NN::Core::NeuralNetwork<T>
     {
     private:
         std::vector<std::unique_ptr<NN::Core::Layer<T>>> _layers;
@@ -51,7 +51,7 @@ namespace NN::Models
             std::ofstream outFile;
             outFile.open(fileName, std::ios::binary);
             
-            ModelType type = ModelType::MLP;
+            ModelType type = ModelType::Sequential;
             outFile.write(reinterpret_cast<char*>(&type), sizeof(uint32_t));
 
             size_t layersAmount = _layers.size();
@@ -74,7 +74,7 @@ namespace NN::Models
                 auto newLayer = NN::Layers::LayerFactory::loadNextLayer<T>(inFile);
                 this->addLayer(std::move(newLayer)); 
             }
-            std::cout << "MLP loaded\n";
+            std::cout << "Sequential loaded\n";
         }
     };
 }

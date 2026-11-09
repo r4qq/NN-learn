@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/NeuralNetwork.hpp"
-#include "models/MLP.hpp"
+#include "models/Sequential.hpp"
 #include "models/ModelType.hpp"
 #include <cstdint>
 #include <filesystem>
@@ -9,20 +9,10 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
-#include <sys/resource.h>
 #include <string>
 
-namespace NN::Utils 
+namespace NN::Utils::Serialization
 {
-    inline void PrintMemoryUsage()
-    {
-        struct rusage usage;
-        getrusage(RUSAGE_SELF, &usage);
-        std::cout << "Peak mem usage: "
-                  << usage.ru_maxrss / 1024.0 
-                  << " MB\n";
-    }
-
     template<typename T> 
     void SaveModel(const NN::Core::NeuralNetwork<T>& nn, std::string fileName) 
     {
@@ -53,8 +43,8 @@ namespace NN::Utils
 
         switch (type) 
         {
-            case ModelType::MLP :
-                nn = std::make_unique<NN::Models::MLP<T>>();
+            case ModelType::Sequential :
+                nn = std::make_unique<NN::Models::Sequential<T>>();
                 nn->load(inFile);
                 break;
         }

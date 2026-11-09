@@ -2,13 +2,14 @@
 
 ## Note: Project for learning purposes. Not for serious use.
 
-A header-only C++23 machine learning "framework" built from scratch to study core mechanics of neural networks, C++ language, and memory optimization. It relies on the [tensor-hpp](https://github.com/r4qq/tensor-hpp) library for underlying tensor operations and matrix math.
+A header-only C++23 machine learning "framework" built from scratch to study core mechanics of neural networks, C++ language, and memory optimization. It relies on the [tensor-hpp](https://github.com/r4qq/tensor-hpp) "library" for underlying tensor operations and matrix math.
 
 ## Key Features
 
 - Layer-Based Architecture: Easily compose networks using a modular addLayer system.
 - Components: Includes implementations for DenseLayer, ReLU, Sigmoid, Tanh, and standard Softmax.
 - Loss Functions: Mean Squared Error (MSE) and Categorical Cross-Entropy Loss (CCEL). Includes a fused CCELSoftmaxLayer that mathematically cancels the Softmax Jacobian calculation to pass the CCEL gradient directly to the hidden layers.
+- Initialization functions: He normalized, Xavier uniform (Glorot) anz zero initalization for both weights and biases.
 - Memory optimizations (?): Layers dynamically pre-allocate memory buffers during the first forward/backward pass. Subsequent training iterations overwrite these buffers, avoiding dynamic heap allocations (new/malloc) during the main training loop. Uses C++23 [[unlikely]] attributes to optimize branch prediction for the allocation checks.
 - Model Serialization: Binary saving and loading. Dynamically reconstructs architectures using a Layer Factory pattern without needing to hardcode layer sizes during instantiation.
 
@@ -16,7 +17,7 @@ A header-only C++23 machine learning "framework" built from scratch to study cor
 
 - POSIX-compliant OS for <sys/resource.h> memory profiling
 - C++ Compiler: C++23
- - tensor-hpp library in the include path (AVX2/FMA and OpenMP support required)
+- everything in .gitmodules
 
 ## Installation
 
@@ -36,6 +37,14 @@ NN::Models::MLP<float> nn;
 nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(2, 3)); // 2 inputs, 3 neurons
 nn.addLayer(std::make_unique<NN::Layers::TanhLayer<float>>());
 nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(3, 1)); // Output layer
+```
+
+You can also add initiazlization functions for both weights and biases.
+```cpp
+nn.addLayer(std::make_unique<NN::Layers::DenseLayer<float>>(
+                                784, 256,
+                                NN::Layers::Initialization::heNormal<float>,
+                                NN::Layers::Initialization::zero<float>));
 ```
 
 ### 2. Training loop

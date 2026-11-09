@@ -31,7 +31,9 @@ namespace NN::Loss
 
             static Tensor::Tensor<T> derivative(const Tensor::Tensor<T>& predicted, const Tensor::Tensor<T>& trueVal)
             {
-                auto n = predicted.shape()[0];
+                //TODO: sometimes work, sometimes dont
+                //auto n = predicted.shape()[0];
+                auto n = predicted.size();
                 Tensor::Tensor<T> gradient(predicted.shape());
 
                 std::transform(predicted.data(),
